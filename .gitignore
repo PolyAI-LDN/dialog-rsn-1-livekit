@@ -1,0 +1,7 @@
+.env
+.env.local
+.venv/
+__pycache__/
+scratch/
+call.wav
+console-recordings/
