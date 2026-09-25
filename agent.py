@@ -10,9 +10,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from livekit.agents import Agent, AgentServer, AgentSession, JobContext, RunContext, cli
 from livekit.agents.llm import function_tool
-from livekit.plugins import elevenlabs
+from livekit.plugins import elevenlabs, polyai
 
-import dialog_rsn_1
 from hotel import INSTRUCTIONS, change_checkout_time, look_up_reservation
 
 load_dotenv(Path(__file__).parent / ".env")
@@ -55,7 +54,7 @@ async def entrypoint(ctx: JobContext) -> None:
     session = AgentSession(
         # Dialog-RSN-1 hears the caller, decides when they've finished, and streams the reply
         # as text. It replaces the STT, the LLM and the turn detector.
-        llm=dialog_rsn_1.RealtimeModel(),
+        llm=polyai.realtime.RealtimeModel(),
         # Dialog-RSN-1 doesn't speak, so a TTS voices each reply as it streams.
         tts=elevenlabs.TTS(voice_id="EXAVITQu4vr4xnSDxMaL", model="eleven_flash_v2_5"),
     )

@@ -10,7 +10,6 @@ speech-to-text, turn detector or LLM.
 | File | What it is |
 |---|---|
 | `agent.py` | The agent: instructions, two tools, and an `AgentSession` with Dialog-RSN-1 and a TTS |
-| `dialog_rsn_1.py` | `RealtimeModel`: LiveKit's OpenAI Realtime plugin, adjusted for Dialog-RSN-1. Copy it into your own agent |
 | `hotel.py` | Instructions and in-memory demo bookings |
 | `caller.py` | A scripted caller that joins a room and speaks the WAVs in `samples/`, including a barge-in |
 
@@ -54,16 +53,25 @@ uv run caller.py      # terminal 2: a scripted caller, no microphone needed
 The cut-off line is the barge-in: the transcript holds only what the caller heard. The agent's
 side of the call is saved to `call.wav`.
 
-## Why `dialog_rsn_1.py` exists
+## The Dialog-RSN-1 plugin
 
-LiveKit's `openai.realtime.RealtimeModel` speaks the same protocol as Dialog-RSN-1. Point it at
-`https://api.us.poly.ai/v1` unchanged, though, and it breaks three ways:
+The agent uses [`livekit-plugins-polyai`](https://github.com/PolyAI-LDN/livekit-plugins-polyai),
+PolyAI's LiveKit plugin for Dialog-RSN-1:
 
-| Symptom | Cause |
-|---|---|
-| `'audio.output' is not supported by this service` | The plugin always sends a voice and OpenAI's turn-detection tuning. Dialog-RSN-1 rejects the whole `session.update`, instructions included |
-| `generate_reply timed out` | The plugin waits for `response.metadata` to be echoed back. Dialog-RSN-1 doesn't echo it |
-| `function_call_output.call_id=... does not match the pending tool call`, then `generation_failed` on every turn | The plugin shortens call ids longer than 32 characters. Dialog-RSN-1's are 37 |
+```python
+from livekit.plugins import polyai
 
-`dialog_rsn_1.RealtimeModel` fixes those three and asks for text replies. It subclasses the
-plugin's internals, so `pyproject.toml` pins `livekit-agents` to the 1.8 series it was tested on.
+session = AgentSession(llm=polyai.realtime.RealtimeModel(), tts=elevenlabs.TTS(...))
+```
+
+To add Dialog-RSN-1 to your own agent, install it from GitHub (it isn't on PyPI yet):
+
+```bash
+uv add "livekit-plugins-polyai @ git+https://github.com/PolyAI-LDN/livekit-plugins-polyai"
+```
+
+Its README lists the options and how each LiveKit feature maps to Dialog-RSN-1.
+
+LiveKit's own `openai.realtime.RealtimeModel` doesn't work with Dialog-RSN-1 unchanged. It sends
+session fields Dialog-RSN-1 rejects, waits for response metadata Dialog-RSN-1 doesn't echo, and
+shortens Dialog-RSN-1's 37-character call ids.

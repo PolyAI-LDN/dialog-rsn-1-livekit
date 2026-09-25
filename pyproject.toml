@@ -4,11 +4,13 @@ version = "0.1.0"
 description = "A LiveKit Agents voice agent on Dialog-RSN-1"
 requires-python = ">=3.10"
 dependencies = [
-    # dialog_rsn_1.py subclasses the OpenAI Realtime plugin's internals, so stay on the
-    # minor version it was tested against.
-    "livekit-agents[openai,elevenlabs]~=1.8.3",
+    "livekit-agents[elevenlabs]~=1.8.3",
+    "livekit-plugins-polyai>=0.1",
     "python-dotenv>=1.0",
 ]
 
 [tool.uv]
 package = false
+
+[tool.uv.sources]
+livekit-plugins-polyai = { git = "https://github.com/PolyAI-LDN/livekit-plugins-polyai" }
