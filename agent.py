@@ -60,7 +60,7 @@ async def entrypoint(ctx: JobContext) -> None:
     )
 
     await session.start(agent=FrontDesk(), room=ctx.room)
-    # Dialog-RSN-1 ignores per-reply instructions, so the greeting comes from INSTRUCTIONS.
+    # The plugin drops per-reply instructions, so the greeting comes from INSTRUCTIONS.
     await session.generate_reply()
 
 
