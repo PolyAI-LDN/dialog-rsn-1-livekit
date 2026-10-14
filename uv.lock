@@ -1217,7 +1217,7 @@ wheels = [
 [[package]]
 name = "livekit-plugins-polyai"
 version = "0.1.0"
-source = { git = "https://github.com/PolyAI-LDN/livekit-plugins-polyai#4706bba4e92f9c32ec50495ae345c44779ae14f3" }
+source = { git = "https://github.com/PolyAI-LDN/livekit-plugins-polyai#37eb219b5e8d2df20d2755bcf554b031ffea90c9" }
 dependencies = [
     { name = "livekit-agents" },
 ]
