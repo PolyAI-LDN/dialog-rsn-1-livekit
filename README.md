@@ -72,6 +72,8 @@ uv add "livekit-plugins-polyai @ git+https://github.com/PolyAI-LDN/livekit-plugi
 
 Its README lists the options and how each LiveKit feature maps to Dialog-RSN-1.
 
-LiveKit's own `openai.realtime.RealtimeModel` doesn't work with Dialog-RSN-1 unchanged. It sends
-session fields Dialog-RSN-1 rejects, waits for response metadata Dialog-RSN-1 doesn't echo, and
-shortens Dialog-RSN-1's 37-character call ids.
+LiveKit's own `openai.realtime.RealtimeModel` asks for audio by default, so Dialog-RSN-1 speaks
+the replies in its own voice and LiveKit skips your TTS. It also sends OpenAI settings that
+Dialog-RSN-1 ignores, such as a voice and semantic VAD tuning. `livekit-plugins-polyai` asks for
+text, sends only the fields Dialog-RSN-1 uses, and rewrites an interrupted reply to the words the
+caller heard.

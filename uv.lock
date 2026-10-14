@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1217,7 +1217,7 @@ wheels = [
 [[package]]
 name = "livekit-plugins-polyai"
 version = "0.1.0"
-source = { git = "https://github.com/PolyAI-LDN/livekit-plugins-polyai#db642149a52f3b5f0a85de3e69881d5a86117477" }
+source = { git = "https://github.com/PolyAI-LDN/livekit-plugins-polyai#4706bba4e92f9c32ec50495ae345c44779ae14f3" }
 dependencies = [
     { name = "livekit-agents" },
 ]

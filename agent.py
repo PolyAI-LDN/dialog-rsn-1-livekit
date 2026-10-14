@@ -55,7 +55,7 @@ async def entrypoint(ctx: JobContext) -> None:
         # Dialog-RSN-1 hears the caller, decides when they've finished, and streams the reply
         # as text. It replaces the STT, the LLM and the turn detector.
         llm=polyai.realtime.RealtimeModel(),
-        # Dialog-RSN-1 doesn't speak, so a TTS voices each reply as it streams.
+        # The plugin asks Dialog-RSN-1 for text, so a TTS voices each reply as it streams.
         tts=elevenlabs.TTS(voice_id="EXAVITQu4vr4xnSDxMaL", model="eleven_flash_v2_5"),
     )
 
