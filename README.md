@@ -19,7 +19,7 @@ You need Python 3.10 or later, [uv](https://docs.astral.sh/uv/) and the
 [LiveKit CLI](https://docs.livekit.io/intro/basics/cli/) (`brew install livekit-cli`).
 
 ```bash
-cp .env.example .env         # add DIALOG_API_KEY and ELEVEN_API_KEY
+cp .env.example .env         # add POLY_API_KEY and ELEVEN_API_KEY
 uv sync
 lk agent console agent.py    # talk to it through your microphone and speakers
 ```
