@@ -53,27 +53,27 @@ uv run caller.py      # terminal 2: a scripted caller, no microphone needed
 The cut-off line is the barge-in: the transcript holds only what the caller heard. The agent's
 side of the call is saved to `call.wav`.
 
-## The Dialog-RSN-1 plugin
+## Dialog-RSN-1 on LiveKit's OpenAI plugin
 
-The agent uses [`livekit-plugins-polyai`](https://github.com/PolyAI-LDN/livekit-plugins-polyai),
-PolyAI's LiveKit plugin for Dialog-RSN-1:
+Dialog-RSN-1 speaks the OpenAI Realtime protocol, so the agent uses LiveKit's own OpenAI plugin,
+pointed at Dialog-RSN-1's URL and key:
 
 ```python
-from livekit.plugins import polyai
+from livekit.plugins import openai
 
-session = AgentSession(llm=polyai.realtime.RealtimeModel(), tts=elevenlabs.TTS(...))
+llm = openai.realtime.RealtimeModel(
+    base_url=os.environ.get("DIALOG_REALTIME_URL", "wss://api.studio.poly.ai/v1"),
+    api_key=os.environ["POLY_API_KEY"],
+    model="dialog-rsn-1",
+    modalities=["text"],
+)
 ```
 
-To add Dialog-RSN-1 to your own agent, install it from GitHub (it isn't on PyPI yet):
+`modalities=["text"]` matters: the plugin's default asks for audio, so Dialog-RSN-1 would speak
+the replies in its own voice and LiveKit would skip your TTS. For a key from `studio.us.poly.ai`,
+set `DIALOG_REALTIME_URL=wss://api.us.poly.ai/v1`.
 
-```bash
-uv add "livekit-plugins-polyai @ git+https://github.com/PolyAI-LDN/livekit-plugins-polyai"
-```
-
-Its README lists the options and how each LiveKit feature maps to Dialog-RSN-1.
-
-LiveKit's own `openai.realtime.RealtimeModel` asks for audio by default, so Dialog-RSN-1 speaks
-the replies in its own voice and LiveKit skips your TTS. It also sends OpenAI settings that
-Dialog-RSN-1 ignores, such as a voice and semantic VAD tuning. `livekit-plugins-polyai` asks for
-text, sends only the fields Dialog-RSN-1 uses, and rewrites an interrupted reply to the words the
-caller heard.
+To add Dialog-RSN-1 to your own agent, install the plugin with `uv add "livekit-agents[openai]~=1.8.3"`
+and see [Add Dialog-RSN-1 to an existing LiveKit agent](https://docs.poly.ai/dialog-rsn-1/guides/livekit#add-dialog-rsn-1-to-an-existing-livekit-agent)
+in the guide. [Settings that matter](https://docs.poly.ai/dialog-rsn-1/guides/livekit#settings-that-matter)
+lists the few options to set or avoid, and how to send Dialog-RSN-1's own fields.
