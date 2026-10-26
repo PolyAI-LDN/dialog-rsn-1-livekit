@@ -1,6 +1,6 @@
 # A LiveKit voice agent on Dialog-RSN-1
 
-Companion code for *Build a LiveKit voice agent on Dialog-RSN-1*.
+Companion code for [Build a LiveKit voice agent](https://docs.poly.ai/dialog-rsn-1/guides/livekit).
 
 A front-desk agent for the fictional Grand Meridian Hotel, built on
 [LiveKit Agents](https://docs.livekit.io/agents/). Dialog-RSN-1 hears the caller, decides when
