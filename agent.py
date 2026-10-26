@@ -5,12 +5,13 @@
 """
 
 import json
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
 from livekit.agents import Agent, AgentServer, AgentSession, JobContext, RunContext, cli
 from livekit.agents.llm import function_tool
-from livekit.plugins import elevenlabs, polyai
+from livekit.plugins import elevenlabs, openai
 
 from hotel import INSTRUCTIONS, change_checkout_time, look_up_reservation
 
@@ -54,14 +55,18 @@ async def entrypoint(ctx: JobContext) -> None:
     session = AgentSession(
         # Dialog-RSN-1 hears the caller, decides when they've finished, and streams the reply
         # as text. It replaces the STT, the LLM and the turn detector.
-        llm=polyai.realtime.RealtimeModel(),
-        # The plugin asks Dialog-RSN-1 for text, so a TTS voices each reply as it streams.
+        llm=openai.realtime.RealtimeModel(
+            base_url=os.environ.get("DIALOG_REALTIME_URL", "wss://api.studio.poly.ai/v1"),
+            api_key=os.environ["POLY_API_KEY"],
+            model="dialog-rsn-1",
+            # Text out, so the TTS below voices each reply as it streams.
+            modalities=["text"],
+        ),
         tts=elevenlabs.TTS(voice_id="EXAVITQu4vr4xnSDxMaL", model="eleven_flash_v2_5"),
     )
 
     await session.start(agent=FrontDesk(), room=ctx.room)
-    # The plugin drops per-reply instructions, so the greeting comes from INSTRUCTIONS.
-    await session.generate_reply()
+    await session.generate_reply(instructions="Greet the caller.")
 
 
 if __name__ == "__main__":
