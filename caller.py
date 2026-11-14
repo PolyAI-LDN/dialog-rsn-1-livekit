@@ -103,8 +103,11 @@ class Caller:
         tool runs, then answer. It stays "thinking" through the tool, and is "listening" only
         once its whole reply has played.
         """
+        deadline = time.monotonic() + timeout
         await self.until_agent_starts(timeout)
-        while self.agent_state() != "listening" or time.monotonic() - self.last_loud < 0.5:
+        while time.monotonic() < deadline and (
+            self.agent_state() != "listening" or time.monotonic() - self.last_loud < 0.5
+        ):
             await self.pause(0.1)
 
 
